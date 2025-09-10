@@ -4,22 +4,18 @@ object Transform {
     /**
      * Rotates the cells about a `square` grid with the given axis length
      *
-     * @param cells A collection of coordinate-pairs indicating active grid cells, ordered `[row, column]` (i.e. `[y, x]`)
+     * @param piece A collection of coordinate-pairs indicating active grid cells, ordered `[row, column]` (i.e. `[y, x]`)
      * @param rotateClockwise If true, rotation will be 90 degrees clockwise, otherwise it is 90 degrees counter-clockwise
      * @param axisLength the number of cells on either x or y axis
      *
      * @return a collection of cells with rotation applied to each element
      */
-    fun rotate(cells: Piece, rotateClockwise: Boolean = true, axisLength: Int = 4): Piece {
-        return cells.map {
-            val halfAxis = (axisLength / 2.0)
-            val (shiftX, shiftY) = it.second - halfAxis to halfAxis - it.first
+    fun rotate(piece: Piece, axisLength: Int, rotateClockwise: Boolean = true): Piece {
+        return piece.map {
             if (rotateClockwise) {
-                val (newX, newY) = rotate90CW(shiftX, shiftY)
-                (halfAxis - newY).toInt() to (newX + halfAxis - 1).toInt()
+                it.second to (axisLength - it.first - 1).toInt()
             } else {
-                val (newX, newY) = rotate90CCW(shiftX, shiftY)
-                (halfAxis - newY - 1).toInt() to (newX + halfAxis).toInt()
+                (axisLength - it.second - 1).toInt() to it.first
             }
         }
     }
@@ -27,14 +23,14 @@ object Transform {
     /**
      * Translates the given cells, note: negative translation is not restricted
      *
-     * @param cells A collection of coordinate-pairs indicating active grid cells, ordered `[row, column]` (i.e. `[y, x]`)
+     * @param piece A collection of coordinate-pairs indicating active grid cells, ordered `[row, column]` (i.e. `[y, x]`)
      * @param direction The direction to move
      * @param distance The number of cells by which to move each cell
      *
      * @return a collection of cells with translation applied to each element
      */
-    fun translate(cells: Piece, direction: Direction, distance: Int = 1): Piece {
-        return cells.map { it.first + (direction.translateY * distance) to it.second + (direction.translateX * distance)}
+    fun translate(piece: Piece, direction: Direction, distance: Int = 1): Piece {
+        return piece.map { it.first + (direction.translateY * distance) to it.second + (direction.translateX * distance)}
     }
 
     /**
@@ -53,7 +49,8 @@ object Transform {
             if (translateToTopLeft(rotatedCells) == lhsTopLeft) {
                 return true
             }
-            rotatedCells = rotate(rotatedCells)
+            // Note: to avoid measuring pieces, take a "large" axis length for rotation
+            rotatedCells = rotate(rotatedCells, axisLength = Int.MAX_VALUE / 2)
         }
         return false
     }
@@ -78,14 +75,6 @@ object Transform {
         val leftDistance = cells.minBy { it.second }.second.takeIf { it >= 0 } ?: 0
         val topDistance = cells.minBy { it.first }.first.takeIf { it >= 0 } ?: 0
         return translate(translate(cells, Direction.LEFT, leftDistance), Direction.UP, topDistance)
-    }
-
-    private fun rotate90CW(x: Double, y: Double): Pair<Double, Double> {
-        return y to -x
-    }
-
-    private fun rotate90CCW(x: Double, y: Double): Pair<Double, Double> {
-        return -y to x
     }
 
     internal fun getConnected(cells: Piece): Set<Pair<Int, Int>> {

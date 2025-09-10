@@ -5,29 +5,15 @@ import kotlin.math.nextUp
 object Randomisation {
 
     /**
-     * Produces a piece randomly. Any piece created will be of minimum tile size 2 and will be
-     * connected
-     *
-     * @param gridSize the size of the grid
-     */
-    fun generateRandomPiece(gridSize: Int): Piece {
-        var candidate = listOf<Cell>()
-        while (candidate.size < 2) {
-            candidate = _generateRandom(gridSize)
-        }
-        return candidate
-    }
-
-    /**
      * Returns a random piece from an existing collection respecting the weight associated to each piece
      *
      * @param weightedPieces a list of `weight -> Piece` pairs, where for the sum of all weights `W_sum`
-     * each piece with weight `W` has a probability of being selected: `W / W_sum`
+     * each piece with weight `W_i` has a probability of being selected: `W_i / W_sum`
      *
-     * For example given the following `weightedPieces`: * `[1 -> P1, 1 -> P2, 2 -> P3, 4 -> , P4]`
+     * For example given the following `weightedPieces`: * `[1 -> P_1, 1 -> P_2, 2 -> P_3, 4 -> , P_4]`
      *
-     * then we expect half of the time to get a P4, a quarter of the time to get a P3, and the other
-     * quarter to get either a P1 or a P2
+     * then we expect half of the time to get a `P_4`, a quarter of the time to get a `P_3`, and the other
+     * quarter to get either a `P_1` or a `P_2`
      */
     fun randomisePiece(weightedPieces: List<Pair<Double, Piece>>): Piece {
         val accumulatedWeights = accumulatedProbabilities(weightedPieces)
@@ -44,14 +30,29 @@ object Randomisation {
      *
      * @param weightedCells a list of `weight -> Piece` pairs, where for the sum of all weights `W_sum`
      * each piece with weight `W` has a probability of being selected: `W / W_sum`
-     * @param wanted the wanted piece
+     *
+     * @return a map of Piece -> probability piece will be selected
      */
-    fun getSelectionProbability(weightedCells: List<Pair<Double, Piece>>): Map<Piece, Double> {
+    fun getSelectionProbabilities(weightedCells: List<Pair<Double, Piece>>): Map<Piece, Double> {
         val weightedPiecesNormalised = weightsToProbabilities(weightedCells.map { it.first })
 
         return weightedPiecesNormalised
             .zip(weightedCells.map { it.second })
             .associate { it.second to it.first }
+    }
+
+    /**
+     * Produces a piece randomly. Any piece created will be of minimum tile size 2 and will be
+     * connected
+     *
+     * @param gridSize the size of the grid
+     */
+    fun generateRandomPiece(gridSize: Int): Piece {
+        var candidate = listOf<Cell>()
+        while (candidate.size < 2) {
+            candidate = _generateRandom(gridSize)
+        }
+        return candidate
     }
 
     private fun _generateRandom(gridSize: Int): Piece {

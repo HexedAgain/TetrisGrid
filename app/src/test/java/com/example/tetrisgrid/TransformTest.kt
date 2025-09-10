@@ -23,7 +23,7 @@ class TransformTest {
             0 to 0, 1 to 0, 2 to 0, 3 to 0,
         )
 
-        val result = Transform.rotate(selected)
+        val result = Transform.rotate(piece = selected, axisLength = 4)
 
         assertEquals(expected, result)
     }
@@ -41,7 +41,7 @@ class TransformTest {
             0 to 0, 1 to 0, 2 to 0,
         )
 
-        val result = Transform.rotate(selected, axisLength = 3)
+        val result = Transform.rotate(piece = selected, axisLength = 3)
 
         assertEquals(expected, result)
     }
@@ -60,7 +60,7 @@ class TransformTest {
             2 to 2, 1 to 2, 0 to 2,
         )
 
-        val result = Transform.rotate(selected, axisLength = 3, rotateClockwise = false)
+        val result = Transform.rotate(piece = selected, axisLength = 3, rotateClockwise = false)
 
         assertEquals(expected, result)
     }
@@ -70,7 +70,7 @@ class TransformTest {
         val selected = listOf(0 to 0, 0 to 1, 1 to 0, 1 to 1)
         val expected = listOf(0 to -1, 0 to 0, 1 to -1, 1 to 0)
 
-        val result = Transform.translate(selected, direction = Direction.LEFT)
+        val result = Transform.translate(piece = selected, direction = Direction.LEFT)
 
         assertEquals(expected, result)
     }
@@ -80,7 +80,7 @@ class TransformTest {
         val selected = listOf(0 to 0, 0 to 1, 1 to 0, 1 to 1)
         val expected = listOf(0 to 2, 0 to 3, 1 to 2, 1 to 3)
 
-        val result = Transform.translate(selected, direction = Direction.RIGHT, distance = 2)
+        val result = Transform.translate(piece = selected, direction = Direction.RIGHT, distance = 2)
 
         assertEquals(expected, result)
     }
@@ -90,7 +90,7 @@ class TransformTest {
         val selected = listOf(0 to 0, 0 to 1, 1 to 0, 1 to 1)
         val expected = listOf(-1 to 0, -1 to 1, 0 to 0, 0 to 1)
 
-        val result = Transform.translate(selected, direction = Direction.UP)
+        val result = Transform.translate(piece = selected, direction = Direction.UP)
 
         assertEquals(expected, result)
     }
@@ -100,7 +100,7 @@ class TransformTest {
         val selected = listOf(0 to 0, 0 to 1, 1 to 0, 1 to 1)
         val expected = listOf(2 to 0, 2 to 1, 3 to 0, 3 to 1)
 
-        val result = Transform.translate(selected, direction = Direction.DOWN, distance = 2)
+        val result = Transform.translate(piece = selected, direction = Direction.DOWN, distance = 2)
 
         assertEquals(expected, result)
     }
