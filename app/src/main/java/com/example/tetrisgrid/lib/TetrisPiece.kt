@@ -56,6 +56,10 @@ class TetrisPiece(
         }
     }
 
+    fun rotate() {
+        _active.update { Transform.rotate(it) }
+    }
+
     @Composable
     private fun Grid(
         active: Piece,

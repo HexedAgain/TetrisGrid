@@ -23,7 +23,7 @@ class TransformTest {
             0 to 0, 1 to 0, 2 to 0, 3 to 0,
         )
 
-        val result = Transform.rotate(piece = selected, axisLength = 4)
+        val result = Transform.rotate(piece = selected)
 
         assertEquals(expected, result)
     }
@@ -41,7 +41,7 @@ class TransformTest {
             0 to 0, 1 to 0, 2 to 0,
         )
 
-        val result = Transform.rotate(piece = selected, axisLength = 3)
+        val result = Transform.rotate(piece = selected)
 
         assertEquals(expected, result)
     }
@@ -60,7 +60,7 @@ class TransformTest {
             2 to 2, 1 to 2, 0 to 2,
         )
 
-        val result = Transform.rotate(piece = selected, axisLength = 3, rotateClockwise = false)
+        val result = Transform.rotate(piece = selected, rotateClockwise = false)
 
         assertEquals(expected, result)
     }

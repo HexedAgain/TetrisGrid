@@ -2,15 +2,15 @@ package com.example.tetrisgrid.lib
 
 object Transform {
     /**
-     * Rotates the cells about a `square` grid with the given axis length
+     * Rotates the piece about the minimal `square` grid which contains it fully
      *
      * @param piece A collection of coordinate-pairs indicating active grid cells, ordered `[row, column]` (i.e. `[y, x]`)
      * @param rotateClockwise If true, rotation will be 90 degrees clockwise, otherwise it is 90 degrees counter-clockwise
-     * @param axisLength the number of cells on either x or y axis
      *
      * @return a collection of cells with rotation applied to each element
      */
-    fun rotate(piece: Piece, axisLength: Int, rotateClockwise: Boolean = true): Piece {
+    fun rotate(piece: Piece, rotateClockwise: Boolean = true): Piece {
+        val axisLength = getAxisLength(piece)
         return piece.map {
             if (rotateClockwise) {
                 it.second to (axisLength - it.first - 1).toInt()
@@ -49,8 +49,7 @@ object Transform {
             if (translateToTopLeft(rotatedCells) == lhsTopLeft) {
                 return true
             }
-            // Note: to avoid measuring pieces, take a "large" axis length for rotation
-            rotatedCells = rotate(rotatedCells, axisLength = Int.MAX_VALUE / 2)
+            rotatedCells = rotate(rotatedCells)
         }
         return false
     }
@@ -69,6 +68,21 @@ object Transform {
         RIGHT(1, 0),
         UP(0, -1),
         DOWN(0, 1)
+    }
+
+    private fun getAxisLength(piece: Piece): Int {
+        if (piece.isEmpty()) throw IllegalArgumentException("Cannot rotate without a piece")
+        var minX = Int.MAX_VALUE
+        var minY = Int.MAX_VALUE
+        var maxX = 0
+        var maxY = 0
+        piece.forEach { cell ->
+            maxX = maxOf(cell.second, maxX)
+            minX = minOf(cell.second, minX)
+            maxY = maxOf(cell.first, maxY)
+            minY = minOf(cell.first, minY)
+        }
+        return maxOf(maxX - minX, maxY - minY) + 1
     }
 
     private fun translateToTopLeft(cells: Piece): Piece {
