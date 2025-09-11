@@ -63,6 +63,13 @@ object Transform {
         return getConnected(piece) == piece.toSet()
     }
 
+    /**
+     * Reports whether two pieces intersect
+     */
+    fun hitTest(lhs: Piece, rhs: Piece): Boolean {
+        return (lhs.toSet().intersect(rhs.toSet()).isNotEmpty())
+    }
+
     enum class Direction(val translateX: Int, val translateY: Int) {
         LEFT(-1, 0),
         RIGHT(1, 0),

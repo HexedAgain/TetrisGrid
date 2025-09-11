@@ -1,13 +1,25 @@
 package com.example.tetrisgrid
 
+import com.example.tetrisgrid.lib.StandardPieces
 import com.example.tetrisgrid.lib.Transform
 import com.example.tetrisgrid.lib.Transform.Direction
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.junit.runners.Parameterized
 
 class TransformTest {
+    val allPieces = listOf(
+        StandardPieces.LineShapeFourByOne,
+        StandardPieces.SquareShapeTwoByTwo,
+        StandardPieces.TShapeThreeByTwo,
+        StandardPieces.SnakeShapeReflectedThreeByTwo,
+        StandardPieces.SnakeShapeThreeByTwo,
+        StandardPieces.LShapeReflectedThreeByTwo,
+        StandardPieces.LShapeThreeByTwo
+    )
+
     @Test
     fun `rotate, CW - given grid is comprised of 4 rows and 4 columns it maps each cell to correct rotated position`() {
         val selected = listOf(
@@ -187,5 +199,31 @@ class TransformTest {
         val cells = listOf(0 to 0, 0 to 2, 1 to 1)
 
         assertFalse(Transform.isConnected(cells))
+    }
+
+    @Test
+    fun `hitTest, if two cells are the same it returns true`() {
+        val cells = listOf(0 to 0)
+
+        assertTrue(Transform.hitTest(cells, cells))
+    }
+
+    @Test
+    fun `hitTest, if two cells are disjoint it returns false`() {
+        val cells = listOf(0 to 1)
+
+        assertTrue(Transform.hitTest(cells, cells))
+    }
+
+    @Test
+    fun `hitTest, if two pieces partially overlap it returns true`() {
+        // Really this would be better as a parameterised test
+        allPieces.forEach { lhs ->
+            allPieces.forEach { rhs ->
+                if (lhs != rhs) {
+                    assertTrue(Transform.hitTest(lhs, rhs))
+                }
+            }
+        }
     }
 }
